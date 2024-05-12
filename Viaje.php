@@ -44,10 +44,12 @@ class Viaje{
     /* Metodo para convertir un arreglo de pasajeros en string */
     public function listaPasajeros(){
         $DatosPas = " ";
+        $numPasajero = 1;
          /* Recorremos el arreglo de pasajeros  */
     foreach($this->getPasajeros() as $pasajero){
        /* Convertimos cada arreglo pasajero en un string y lo adicionamos a un string a devolver al final */
-       $DatosPas = $DatosPas." \n ".implode(" \n ", $pasajero);
+       $DatosPas = "\n".$DatosPas."\n Pasajero Nro: ".$numPasajero." \n ".implode(" \n ", $pasajero)."\n";
+       $numPasajero++;
     }
     return $DatosPas;
     }
