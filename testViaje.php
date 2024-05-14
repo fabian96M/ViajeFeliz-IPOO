@@ -15,7 +15,7 @@ $viajes[] = $viaje;
 /* Presentamos las opciones al usuario (carga de datos de viaje, modificar datos de viaje o mostrar los datos del viaje) */
 while($bandera){
 echo "\n A continuacion ingrese la opcion deseada: \n ";
-echo "1 - Cargar Datos de un viaje nuevo \n
+echo "\n1 - Cargar Datos de un viaje nuevo \n
 2 - Modificar Datos de un viaje \n
 3 - Mostrar Datos de un viaje \n
 4 - Salir \n";
@@ -34,7 +34,6 @@ switch ($eleccion1) {
         menuDerivadora();
         $eleccion = trim(fgets(STDIN));
         modificarViaje($eleccion, $viajes[$numViaje - 1]);
-
 
         break;
     case 3:
@@ -95,6 +94,10 @@ function crearArrayPasajeros($maxPasajeros)
         $eleccion = trim(fgets(STDIN));
         if ($eleccion == 2) {
             $continuar = false;
+        }
+        elseif($i == $maxPasajeros){
+            echo "\n Ya no es posible añadir mas pasajeros (Maximo alcanzado)\n";
+            break;
         }
     } while ($i < $maxPasajeros && $continuar);
     /* Retornamos el arreglo resultante */
@@ -201,7 +204,7 @@ function modificarPasajero($objViaje)
     $pasajeros = $objViaje->getPasajeros();
 
     /* solicitamos el numero de pasajero */
-    echo "Ingrese el numero de pasajero a modificar";
+    echo "\n Ingrese el numero de pasajero a modificar \n";
 
     /* confirmamos que sea una posicion valida */
     while ($bandera) {
@@ -210,13 +213,13 @@ function modificarPasajero($objViaje)
             /* Si el numero esta dentro del rango */
             $bandera = false;
         } else {
-            echo "El numero no es valido, porfavor ingrese otro";
+            echo "\n El numero no es valido, porfavor ingrese otro \n";
         }
     }
     /* si es valida creamos un pasajero usando la funcion crearPasajero */
     $pasajero = crearPasajero();
     /* Asignamos el pasajero en la posicion especificada */
-    $pasajeros[$numPasajero] = $pasajero;
+    $pasajeros[$numPasajero-1] = $pasajero;
     /* Seteamos el arreglo de pasajeros dentro del objeto */
     $objViaje->setPasajeros($pasajeros);
 }
