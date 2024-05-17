@@ -57,7 +57,6 @@ class Viaje{
     /* Metodo toString */
     public function __toString()
     {
-        /*  */
         return "\n Codigo de Viaje: ".$this->getCodViaje()." \n Destino: ".$this->getDestino()." \n Maximo de Pasajeros: ".$this->getMaxPasajeros()."\n Datos De Pasajeros: \n".$this->listaPasajeros()." \n";
     }
 
