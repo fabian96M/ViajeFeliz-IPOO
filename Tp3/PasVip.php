@@ -6,9 +6,9 @@ private $numViajeroFrecuente;
 private $cantMillasAcum;
 
 /* Metodo construct */
-public function __construct($nombre, $numAsiento, $numTicket, $numViajeroFrecuente, $cantMillasAcum)
+public function __construct($nombre, $apellido, $numAsiento, $numTicket, $dni, $telefono, $numViajeroFrecuente, $cantMillasAcum)
 {
-    parent::__construct($nombre, $numAsiento, $numTicket);
+    parent::__construct($nombre, $apellido, $numAsiento, $numTicket, $dni, $telefono);
     $this->numViajeroFrecuente = $numViajeroFrecuente;
     $this->cantMillasAcum = $cantMillasAcum;
 }
@@ -27,7 +27,15 @@ public function getNumViajeroFrecuente(){
 public function getCantMillasAcum(){
     return $this->cantMillasAcum;
 }
-
+/* Metodo darPorcentajeIncremento() */
+public function darPorcentajeIncremento(){
+    $incremento = parent::darPorcentajeIncremento();
+    $incremento = 0.35;
+    if($this->getCantMillasAcum() > 300){
+        $incremento = 0.3;
+    }
+    return $incremento;
+}
 /* Metodo ToString */
 public function __toString()
 {

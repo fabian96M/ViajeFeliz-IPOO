@@ -7,9 +7,9 @@ class PasNecEsp extends Pasajero{
     private $comidaEspecial;
 
     /* Metodo construct */
-    public function __construct($nombre, $numAsiento, $numTicket, $conSilla, $conAsistencia, $comidaEspecial)
+    public function __construct($nombre, $apellido, $numAsiento, $numTicket, $dni, $telefono, $conSilla, $conAsistencia, $comidaEspecial)
     {
-        parent::__construct($nombre, $numAsiento, $numTicket);
+        parent::__construct($nombre, $apellido, $numAsiento, $numTicket, $dni, $telefono);
         $this->conSilla = $conSilla;
         $this->conAsistencia = $conAsistencia;
         $this->comidaEspecial = $comidaEspecial;
@@ -33,6 +33,16 @@ class PasNecEsp extends Pasajero{
     }
     public function getComidaEspecial(){
         return $this->comidaEspecial;
+    }
+    public function darPorcentajeIncremento(){
+        $incremento = parent::darPorcentajeIncremento();
+        if($this->getConSilla() && $this->getConAsistencia() && $this->getComidaEspecial()){
+        $incremento = 0.3;
+        }
+        elseif($this->getConSilla() || $this->getConAsistencia() || $this->getComidaEspecial()){
+            $incremento = 0.15;
+        }
+        return $incremento; 
     }
     /* Metodo booleano a texto */
     public function booleanoTexto($booleano){
