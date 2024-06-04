@@ -3,6 +3,8 @@ include "Viaje.php";
 include "Persona.php";
 include "Responsable.php";
 include "Pasajero.php";
+/* Inicializacion de var */
+$bandera = true;
 
 /* Instanciamos 4 personas */
 $persona1 = new Persona("Pedro", "Coral");
@@ -28,7 +30,7 @@ while($bandera){
 echo "\n A continuacion ingrese la opcion deseada: \n ";
 echo "\n
 1 - Cargar Datos de un viaje nuevo \n
-2 - Modificar Datos de un pasajero \n
+2 - Modificar Datos de un Viaje \n
 3 - Mostrar Datos de un viaje \n
 4 - Salir \n";
 
@@ -63,23 +65,8 @@ switch ($eleccion1) {
         break;
 }
 }
-/* Funcion para modificar un pasajero */
-function modificarPasajero(){
-/* Recibe por parametro un pasajero y modifica un */
-}
-/* Funcion para verificar si un pasajero que entra por parametro esta cargado en el array que entra por parametro*/
-function pasajeroCargado($arregloPasajeros, $objPasajero){
-    /* si el pasajero ya esta cargado retorna true */
-    $pCargado = false;
-    $i = 0;
-    while(!$pCargado && $i < count($arregloPasajeros)){
-        if($arregloPasajeros[$i]=== $objPasajero){
-            $pCargado = true;
-        }
-        $i++;
-    }
-    return $pCargado;
-}
+
+
 /* FUNCIONES PARA CARGA DE DATOS */
 /* Funcion para agregar los datos de una persona */
 function cargarPersona(){
@@ -94,16 +81,15 @@ function cargarPersona(){
 /* crea un objeto con los datos de un pasajero */
 function crearPasajero()
 {
-
-    /* Solicitamos los datos del pasajero */
-    echo "\n Ingrese datos del pasajero \n";
-    $objPers1 = cargarPersona();
-    echo "\n Numero de Documento: \n";
-    $numDoc = trim(fgets(STDIN));
-    echo "\n Numero de telefono\n";
-    $numTelefono = trim(fgets(STDIN));
-    /* Creamos un los objetos con los datos del pasajero*/
-    $objPasajero = new Pasajero($objPers1, $numDoc, $numTelefono);
+     /* Solicitamos los datos del pasajero */
+     echo "\n Ingrese datos del pasajero \n";
+     $objPers1 = cargarPersona();
+     echo "\n Numero de Documento: \n";
+     $numDoc = trim(fgets(STDIN));
+     echo "\n Numero de telefono\n";
+     $numTelefono = trim(fgets(STDIN));
+     /* Creamos un los objetos con los datos del pasajero*/
+     $objPasajero = new Pasajero($objPers1, $numDoc, $numTelefono);
     /* Retornamos el objeto con los datos */
     return $objPasajero;
 }
@@ -134,7 +120,12 @@ function crearArrayPasajeros($maxPasajeros)
     echo "\n A continuacion ingrese los datos de cada pasajero, si hay espacio para mas se le consultara si desea añadir otro mas\n";
     /* Solicitamos los datos dentro del bucle consultando al final de cada iteracion */
     do {
-        $arrayPasajeros[] = crearPasajero();
+        $pasajero = crearPasajero();
+        if(pasajeroCargado($arrayPasajeros, $pasajero)){
+            echo "\n El pasajero ya es encuentra cargado \n";
+        }
+        else{
+            $arrayPasajeros[] = $pasajero;
         $i++;
         echo "\n Desea añadir otro pasajero? Por favor pulse: \n
              |1) Para si  \n
@@ -146,6 +137,7 @@ function crearArrayPasajeros($maxPasajeros)
         elseif($i == $maxPasajeros){
             echo "\n Ya no es posible añadir mas pasajeros (Maximo alcanzado)\n";
             break;
+        }
         }
     } while ($i < $maxPasajeros && $continuar);
     /* Retornamos el arreglo resultante */
@@ -167,4 +159,113 @@ function cargaDatosViaje()
     $responsableV = cargarResponsable();
     $viaje = new Viaje($CodViaje, $destino, $maxPasajeros, $arrayPasajeros, $responsableV);
     return $viaje;
+}
+/* FUNCIONES PARA MODIFICAR DATOS */
+///////////////////////////////////////
+function menuDerivadora()
+{
+    /* Muestra el menu de opciones de las funciones para modificar datos */
+    echo "\n A continuacion ingrese el numero de acuerdo a lo que desee modificar \n";
+    echo "|1 ) Para modificar el codigo de viaje: \n";
+    echo "|2 ) Para modificar el Destino de viaje: \n";
+    echo "|3 ) Para modificar el Maximo de pasajeros de un viaje: \n";
+    echo "|4 ) Para modificar los parajeros de un viaje: \n";
+    echo "|5 ) Para modificar el pasajero de un viaje: \n";
+}
+function modificarViaje($numEleccion, $viaje)
+{
+    /* Recibe un numero por parametro y deriva segun el numero  */
+
+    switch ($numEleccion) {
+        case 1:
+            echo "\n Indique el Nuevo codigo de viaje \n";
+            $viaje->setCodViaje(trim(fgets(STDIN)));  
+            break;
+        case 2:
+            echo "\n Ingrese un nuevo destino de viaje \n";
+            $destino = trim(fgets(STDIN));
+            $viaje->setDestino($destino);
+            break;
+        case 3:
+            $viaje = modificarMaximoPasajeros($viaje);
+            break;
+
+        case 4:
+            $maxPasajeros = $viaje->getMaxPasajeros();
+            $viaje->setColPasajeros(crearArrayPasajeros($maxPasajeros));
+            break;
+
+        case 5:
+            modificarPasajero($viaje);
+            break;
+        case 6: $viaje->setResponsable(cargarResponsable());
+
+        default:
+            echo "\n El numero ingresado no esta contemplado \n";
+            break;
+    }
+}
+
+/* funcion para modificar el maximo de pasajeros */
+function modificarMaximoPasajeros($viaje)
+{
+    /* solicitamos que ingrese el nuevo maximo teniendo en cuenta la cantidad actual de pasajeros cargados */
+    $cantPasajeros = count($viaje->getColObjPasajero());
+    echo "\n A continuacion ingrese el nuevo maximo de pasajeros pero recuerde que no puede ingresar un numero menor a: " . $cantPasajeros . "\n";
+
+    do {
+        $nuevoMaxPasajeros = trim(fgets(STDIN));
+        if ($nuevoMaxPasajeros <= $cantPasajeros) {
+            echo "\n El numero esta por debajo del rango de pasajeros cargados \n Por favor ingresa uno por encima de " . $cantPasajeros . " \n";
+        }
+    } while ($nuevoMaxPasajeros <= $cantPasajeros);
+    $viaje->setMaxPasajeros($nuevoMaxPasajeros);
+}
+
+/* modifica un pasajero de un arreglo de pasajero de un objeto viaje  */
+function modificarPasajero($objViaje)
+{
+    /* creamos un arreglo de pasajeros auxiliar y asignamos los datos del arreglo pasajeros del viaje */
+    $bandera = true;
+    $pasajeros = $objViaje->getPasajeros();
+
+    /* solicitamos el numero de pasajero */
+    echo "\n Ingrese el numero de pasajero a modificar \n";
+
+    /* confirmamos que sea una posicion valida */
+    while ($bandera) {
+        $numPasajero = trim(fgets(STDIN));
+        if ($numPasajero < count($pasajeros) && $numPasajero > 0) {
+            /* Si el numero esta dentro del rango */
+            $bandera = false;
+        } else {
+            echo "\n El numero no es valido, porfavor ingrese otro \n";
+        }
+    }
+    /* si es valida creamos un pasajero usando la funcion crearPasajero */
+    $pasajero = crearPasajero();
+    /* Verificamos que el pasajero no este cargado en la coleccion de pasajeros */
+    if(pasajeroCargado($objViaje->getPasajeros(), $pasajero)){
+        echo "\n El pasajero ya es encuentra cargado \n";
+    }else{
+         /* Asignamos el pasajero en la posicion especificada */
+    $pasajeros[$numPasajero-1] = $pasajero;
+    /* Seteamos el arreglo de pasajeros dentro del objeto */
+    $objViaje->setPasajeros($pasajeros);
+
+    }
+   
+}
+/* Funcion para verificar si un pasajero que entra por parametro esta cargado en el array que entra por parametro*/
+function pasajeroCargado($arregloPasajeros, $objPasajero){
+    /* si el pasajero ya esta cargado retorna true */
+    $pCargado = false;
+    $i = 0;
+    while(!$pCargado && $i < count($arregloPasajeros)){
+        if($arregloPasajeros[$i]=== $objPasajero){
+            $pCargado = true;
+        }
+        $i++;
+    }
+    return $pCargado;
 }
